@@ -9,6 +9,7 @@ line. It is intended to be used for contact details -->
 - [GitHub](https://github.com/dragid10)
 - (614) 772-2460
 - Raleigh, NC
+- He / Him
 
 ## Experience
 

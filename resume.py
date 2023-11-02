@@ -4,6 +4,7 @@ import base64
 import itertools
 import logging
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -89,9 +90,11 @@ def title(md: str) -> str:
     assume to be the title of the document.
     """
     for line in md.splitlines():
-        if line[0] == "#":
-            return line.strip("#").strip()
-    raise ValueError("Cannot find any lines that look like markdown headings")
+        if re.match("^#[^#]", line):  # starts with exactly one '#'
+            return line.lstrip("#").strip()
+    raise ValueError(
+        "Cannot find any lines that look like markdown h1 headings to use as the title"
+    )
 
 
 def make_html(md: str, prefix: str = "resume") -> str:
@@ -109,7 +112,7 @@ def make_html(md: str, prefix: str = "resume") -> str:
     return "".join(
         (
             preamble.format(title=title(md), css=css),
-            markdown.markdown(md, extensions=["smarty"]),
+            markdown.markdown(md, extensions=["smarty", "abbr"]),
             postamble,
         )
     )
@@ -122,11 +125,13 @@ def write_pdf(html: str, prefix: str = "resume", chrome: str = "") -> None:
     chrome = chrome or guess_chrome_path()
     html64 = base64.b64encode(html.encode("utf-8"))
     options = [
+        "--no-sandbox",
         "--headless",
         "--print-to-pdf-no-header",
         "--enable-logging=stderr",
         "--log-level=2",
         "--in-process-gpu",
+        "--disable-gpu",
     ]
 
     # Ideally we'd use tempfile.TemporaryDirectory here. We can't because

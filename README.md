@@ -11,7 +11,7 @@ style it with [CSS](resume.css), output to [HTML](resume.html) and
 
  - Python ≥ 3.6
  - [python-markdown](https://python-markdown.github.io/) (`pip install
-   markdown`)
+   -r requirements.txt`)
  - Optional, required for PDF output: Google Chrome or Chromium
 
 ## Usage
